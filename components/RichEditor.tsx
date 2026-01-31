@@ -146,6 +146,13 @@ const RichEditor = ({ value, onChange }: RichEditorProps) => {
         <button
           className="rounded-full border border-slate-200 px-3 py-1 text-xs font-medium"
           type="button"
+          onClick={() => applyCommand("insertUnorderedList")}
+        >
+          List
+        </button>
+        <button
+          className="rounded-full border border-slate-200 px-3 py-1 text-xs font-medium"
+          type="button"
           onClick={handleCreateLink}
         >
           Link

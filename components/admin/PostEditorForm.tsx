@@ -29,6 +29,20 @@ const parseBlocks = (content: unknown) => {
   return Array.isArray(blocks) ? (blocks as { type: string; text?: string }[]) : [];
 };
 
+const parseTags = (content: unknown) => {
+  if (!content || typeof content !== "object") {
+    return [];
+  }
+  const tags = (content as { tags?: unknown }).tags;
+  return Array.isArray(tags) ? (tags as string[]) : [];
+};
+
+const formatTags = (value: string) =>
+  value
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+
 const PostEditorForm = ({ mode, initialPost }: PostEditorFormProps) => {
   const router = useRouter();
   const [title, setTitle] = useState(initialPost?.title ?? "");
@@ -38,8 +52,10 @@ const PostEditorForm = ({ mode, initialPost }: PostEditorFormProps) => {
   const [isHidden, setIsHidden] = useState(initialPost?.is_hidden ?? false);
   const [coverUrl, setCoverUrl] = useState(initialPost?.cover_image_url ?? "");
   const [content, setContent] = useState(parseBlocks(initialPost?.content));
+  const [tagsInput, setTagsInput] = useState(parseTags(initialPost?.content).join(", "));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     if (mode === "create" && title && !slug) {
@@ -51,6 +67,14 @@ const PostEditorForm = ({ mode, initialPost }: PostEditorFormProps) => {
       );
     }
   }, [title, slug, mode]);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      const { data } = await supabaseClient.auth.getUser();
+      setUserId(data.user?.id ?? null);
+    };
+    loadUser();
+  }, []);
 
   const handleSave = async (publish?: boolean) => {
     setSaving(true);
@@ -64,7 +88,8 @@ const PostEditorForm = ({ mode, initialPost }: PostEditorFormProps) => {
         published_at: publish ? new Date().toISOString() : null,
         is_hidden: isHidden,
         cover_image_url: coverUrl || null,
-        content: { blocks: content },
+        author_id: userId,
+        content: { blocks: content, tags: formatTags(tagsInput) },
       };
 
       if (mode === "create") {
@@ -135,6 +160,17 @@ const PostEditorForm = ({ mode, initialPost }: PostEditorFormProps) => {
               value={excerpt ?? ""}
               onChange={(event) => setExcerpt(event.target.value)}
               placeholder="Short summary"
+            />
+          </div>
+          <div>
+            <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+              Tags (comma separated)
+            </label>
+            <input
+              className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm"
+              value={tagsInput}
+              onChange={(event) => setTagsInput(event.target.value)}
+              placeholder="anime, gaming, reviews"
             />
           </div>
           <div>

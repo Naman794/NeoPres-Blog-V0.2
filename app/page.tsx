@@ -25,6 +25,10 @@ const HomePage = async () => {
   const heroPost = hero[0];
   const leftAdSlot = adSlots.find((slot) => slot.key === "left-rail");
 
+  const feedPosts = heroPost
+    ? latest.filter((post) => post.id !== heroPost.id)
+    : latest;
+
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
       <div className="grid gap-8 lg:grid-cols-[360px_minmax(0,1fr)]">
@@ -55,10 +59,20 @@ const HomePage = async () => {
                 {formatDate(heroPost.published_at)}
               </p>
             </div>
-          ) : null}
+          ) : (
+            <div className="rounded-3xl border border-dashed border-slate-200 bg-slate-50 p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                Featured
+              </p>
+              <p className="mt-3 text-sm text-slate-600">
+                No hero post yet. Add a published post to the hero section in the admin
+                homepage manager.
+              </p>
+            </div>
+          )}
 
           <div className="space-y-6">
-            {latest.map((post) => (
+            {feedPosts.map((post) => (
               <PostCard
                 key={post.id}
                 slug={post.slug}

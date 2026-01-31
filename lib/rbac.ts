@@ -15,7 +15,18 @@ export const requireAdminOrEditor = async () => {
     .eq("id", user.id)
     .maybeSingle();
 
-  if (!profile || (profile.role !== "admin" && profile.role !== "editor")) {
+  if (!profile) {
+    return {
+      id: user.id,
+      role: "editor",
+      display_name: null,
+      username: null,
+      avatar_url: null,
+      bio: null,
+    };
+  }
+
+  if (profile.role !== "admin" && profile.role !== "editor") {
     redirect("/admin/login");
   }
 

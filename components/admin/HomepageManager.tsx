@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { supabaseClient } from "@/lib/supabaseClient";
 
@@ -14,8 +14,15 @@ interface HomepageItem {
   } | null;
 }
 
+interface PostOption {
+  id: string;
+  title: string;
+  slug: string;
+}
+
 const HomepageManager = () => {
   const [items, setItems] = useState<HomepageItem[]>([]);
+  const [posts, setPosts] = useState<PostOption[]>([]);
   const [sectionKey, setSectionKey] = useState("hero");
   const [postId, setPostId] = useState("");
   const [rank, setRank] = useState(0);
@@ -29,9 +36,26 @@ const HomepageManager = () => {
     setItems(data ?? []);
   };
 
+  const fetchPosts = async () => {
+    const { data } = await supabaseClient
+      .from("posts")
+      .select("id, title, slug")
+      .eq("status", "published")
+      .eq("is_hidden", false)
+      .order("published_at", { ascending: false });
+    setPosts(data ?? []);
+  };
+
   useEffect(() => {
     fetchItems();
+    fetchPosts();
   }, []);
+
+  useEffect(() => {
+    if (!postId && posts.length) {
+      setPostId(posts[0].id);
+    }
+  }, [posts, postId]);
 
   const handleAdd = async () => {
     setError(null);
@@ -42,7 +66,6 @@ const HomepageManager = () => {
       setError(insertError.message);
       return;
     }
-    setPostId("");
     fetchItems();
   };
 
@@ -53,6 +76,11 @@ const HomepageManager = () => {
       .match({ section_key: item.section_key, post_id: item.post_id });
     fetchItems();
   };
+
+  const availablePosts = useMemo(
+    () => posts.filter((post) => post.id === postId || !items.some((item) => item.post_id === post.id)),
+    [posts, items, postId],
+  );
 
   return (
     <div className="space-y-6">
@@ -73,14 +101,19 @@ const HomepageManager = () => {
           </div>
           <div>
             <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-              Post ID
+              Post
             </label>
-            <input
+            <select
               className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               value={postId}
               onChange={(event) => setPostId(event.target.value)}
-              placeholder="UUID"
-            />
+            >
+              {availablePosts.map((post) => (
+                <option key={post.id} value={post.id}>
+                  {post.title}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
@@ -98,6 +131,7 @@ const HomepageManager = () => {
           className="mt-4 rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white"
           type="button"
           onClick={handleAdd}
+          disabled={!postId}
         >
           Add to section
         </button>
