@@ -1,9 +1,17 @@
+interface AboutCardProps {
+  title: string;
+  description: string;
+}
+
+const AboutCard = ({ title, description }: AboutCardProps) => {
 const AboutCard = () => {
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
         About NeoPress
       </p>
+      <h3 className="mt-3 text-xl font-semibold text-slate-900">{title}</h3>
+      <p className="mt-3 text-sm text-slate-600">{description}</p>
       <h3 className="mt-3 text-xl font-semibold text-slate-900">
         Anime + gaming stories, curated for calm reading.
       </h3>

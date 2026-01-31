@@ -1,4 +1,27 @@
 import PostCard from "@/components/PostCard";
+import { supabasePublic } from "@/lib/supabasePublic";
+
+const formatDate = (value: string | null) => {
+  if (!value) {
+    return "Draft";
+  }
+  return new Date(value).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
+const ArticlesPage = async () => {
+  const { data: posts } = await supabasePublic
+    .from("posts")
+    .select(
+      "id, slug, title, excerpt, cover_image_url, published_at, status, profiles(display_name, username)",
+    )
+    .eq("status", "published")
+    .eq("is_hidden", false)
+    .order("published_at", { ascending: false })
+    .limit(12);
 
 const ArticlesPage = () => {
   const posts = [
@@ -39,6 +62,18 @@ const ArticlesPage = () => {
         </p>
       </div>
       <div className="mt-8 space-y-6">
+        {posts?.map((post) => (
+          <PostCard
+            key={post.id}
+            slug={post.slug}
+            title={post.title}
+            category="Published"
+            author={post.profiles?.display_name ?? post.profiles?.username ?? "NeoPress"}
+            date={formatDate(post.published_at)}
+            excerpt={post.excerpt ?? ""}
+            coverImageUrl={post.cover_image_url}
+          />
+        )) ?? null}
         {posts.map((post) => (
           <PostCard key={post.title} {...post} />
         ))}

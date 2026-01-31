@@ -1,3 +1,14 @@
+interface TrendingItem {
+  id: string;
+  title: string;
+  slug: string;
+}
+
+interface TrendingListProps {
+  items: TrendingItem[];
+}
+
+const TrendingList = ({ items }: TrendingListProps) => {
 const TrendingList = () => {
   const items = [
     "Skyline Sentinels recap: episode 7",
@@ -13,6 +24,11 @@ const TrendingList = () => {
       </p>
       <ul className="mt-4 space-y-3 text-sm text-slate-600">
         {items.map((item, index) => (
+          <li key={item.id} className="flex gap-3">
+            <span className="text-xs font-semibold text-slate-400">{`0${index + 1}`}</span>
+            <a className="font-medium text-slate-700 hover:text-slate-900" href={`/articles/${item.slug}`}>
+              {item.title}
+            </a>
           <li key={item} className="flex gap-3">
             <span className="text-xs font-semibold text-slate-400">{`0${index + 1}`}</span>
             <span className="font-medium text-slate-700">{item}</span>
