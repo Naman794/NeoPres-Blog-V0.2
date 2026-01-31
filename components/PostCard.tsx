@@ -19,9 +19,6 @@ const PostCard = ({
   excerpt,
   coverImageUrl,
 }: PostCardProps) => {
-}
-
-const PostCard = ({ title, category, author, date, excerpt }: PostCardProps) => {
   return (
     <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
@@ -39,10 +36,6 @@ const PostCard = ({ title, category, author, date, excerpt }: PostCardProps) => 
               sizes="(min-width: 768px) 160px, 100vw"
               className="object-cover"
             />
-        <div className="flex h-32 w-full items-center justify-center overflow-hidden rounded-2xl bg-slate-100 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 md:h-24 md:w-40">
-          {coverImageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img alt="" className="h-full w-full object-cover" src={coverImageUrl} />
           ) : (
             "Cover"
           )}
@@ -53,11 +46,6 @@ const PostCard = ({ title, category, author, date, excerpt }: PostCardProps) => 
               {title}
             </a>
           </h3>
-        <div className="flex h-32 w-full items-center justify-center rounded-2xl bg-slate-100 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 md:h-24 md:w-40">
-          Cover
-        </div>
-        <div className="flex-1">
-          <h3 className="text-xl font-semibold text-slate-900">{title}</h3>
           <p className="mt-2 text-sm text-slate-600">{excerpt}</p>
           <p className="mt-4 text-xs uppercase tracking-[0.2em] text-slate-400">
             {author}

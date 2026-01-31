@@ -6,7 +6,6 @@ interface RichEditorBlock {
   type: "paragraph" | "heading" | "list";
   text?: string;
   level?: 1 | 2 | 3 | 4;
-  level?: 2 | 3 | 4;
   items?: string[];
 }
 
@@ -27,7 +26,6 @@ const blocksToHtml = (blocks: RichEditorBlock[]) => {
               : block.level === 2
                 ? "h2"
                 : "h1";
-        const tag = block.level === 4 ? "h4" : block.level === 3 ? "h3" : "h2";
         return `<${tag}>${block.text ?? ""}</${tag}>`;
       }
       if (block.type === "list" && block.items) {
@@ -65,10 +63,6 @@ const htmlToBlocks = (html: string): RichEditorBlock[] => {
               : element.tagName === "H2"
                 ? 2
                 : 1,
-    if (element.tagName === "H2" || element.tagName === "H3" || element.tagName === "H4") {
-      blocks.push({
-        type: "heading",
-        level: element.tagName === "H4" ? 4 : element.tagName === "H3" ? 3 : 2,
         text: element.textContent ?? "",
       });
       return;
@@ -141,9 +135,6 @@ const RichEditor = ({ value, onChange }: RichEditorProps) => {
           onClick={() => applyCommand("formatBlock", "<h1>")}
         >
           H1
-          onClick={() => applyCommand("formatBlock", "<h2>")}
-        >
-          H2
         </button>
         <button
           className="rounded-full border border-slate-200 px-3 py-1 text-xs font-medium"
@@ -151,20 +142,11 @@ const RichEditor = ({ value, onChange }: RichEditorProps) => {
           onClick={() => applyCommand("formatBlock", "<h2>")}
         >
           H2
-          onClick={() => applyCommand("formatBlock", "<h3>")}
-        >
-          H3
         </button>
         <button
           className="rounded-full border border-slate-200 px-3 py-1 text-xs font-medium"
           type="button"
           onClick={handleCreateLink}
-          onClick={() => {
-            const url = window.prompt("Link URL");
-            if (url) {
-              applyCommand("createLink", url);
-            }
-          }}
         >
           Link
         </button>
