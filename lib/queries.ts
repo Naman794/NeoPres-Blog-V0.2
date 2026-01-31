@@ -6,6 +6,7 @@ const selectPostFields =
   "id, slug, title, excerpt, cover_image_url, published_at, status, is_hidden, author_id, profiles(display_name, username, avatar_url, bio, role)";
 
 export const getHomepageLeftRail = cache(async () => {
+export const getHomepageLeftRail = async () => {
   const { data: trendingItems, error: trendingError } = await supabasePublic
     .from("homepage_items")
     .select(`rank, posts(${selectPostFields})`)
@@ -40,6 +41,9 @@ export const getHomepageLeftRail = cache(async () => {
 });
 
 export const getHomepageMain = cache(async () => {
+};
+
+export const getHomepageMain = async () => {
   const { data: heroItems, error: heroError } = await supabasePublic
     .from("homepage_items")
     .select(`rank, posts(${selectPostFields})`)
@@ -70,6 +74,9 @@ export const getHomepageMain = cache(async () => {
 });
 
 export const getPostBySlug = cache(async (slug: string) => {
+};
+
+export const getPostBySlug = async (slug: string) => {
   const { data, error } = await supabasePublic
     .from("posts")
     .select(selectPostFields)
@@ -86,6 +93,9 @@ export const getPostBySlug = cache(async (slug: string) => {
 });
 
 export const getArticleAdSlots = cache(async (keys: string[]) => {
+};
+
+export const getArticleAdSlots = async (keys: string[]) => {
   const { data, error } = await supabasePublic
     .from("ad_slots")
     .select("key, label, html, image_url, target_url, is_enabled")
@@ -98,3 +108,4 @@ export const getArticleAdSlots = cache(async (keys: string[]) => {
 
   return data ?? [];
 });
+};
