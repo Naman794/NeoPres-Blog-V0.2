@@ -40,9 +40,29 @@ Copy `.env.local.example` to `.env.local` and fill in:
 
 ### 3) Supabase setup (DB + RLS + Storage)
 
+#### Create the project
+
+1. Go to the Supabase dashboard and create a new project.
+2. Note the **Project URL** and **API keys** from **Project Settings → API**.
+
+#### Find credentials
+
+- **Project URL** → `NEXT_PUBLIC_SUPABASE_URL`
+- **Anon public key** → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- **Service role key** → `SUPABASE_SERVICE_ROLE_KEY`
+
+> Keep the service role key **server-only**. Never expose it in client bundles.
+
+#### Apply schema + RLS
+
 1. Open the Supabase SQL editor.
 2. Run `db/schema.sql`.
 3. Verify policies with `docs/RLS_CHECKLIST.md`.
+
+#### Storage setup
+
+- The SQL file creates a `media` bucket and policies.
+- Images are stored at `posts/{postId}/...`.
 
 ### 4) Run the app
 

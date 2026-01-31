@@ -4,7 +4,6 @@ interface AboutCardProps {
 }
 
 const AboutCard = ({ title, description }: AboutCardProps) => {
-const AboutCard = () => {
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
@@ -12,13 +11,6 @@ const AboutCard = () => {
       </p>
       <h3 className="mt-3 text-xl font-semibold text-slate-900">{title}</h3>
       <p className="mt-3 text-sm text-slate-600">{description}</p>
-      <h3 className="mt-3 text-xl font-semibold text-slate-900">
-        Anime + gaming stories, curated for calm reading.
-      </h3>
-      <p className="mt-3 text-sm text-slate-600">
-        Weekly digests, thoughtful essays, and practical guides for fans who want a clean,
-        classic feed.
-      </p>
       <button className="mt-5 rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:border-slate-300">
         Subscribe
       </button>

@@ -3,7 +3,6 @@
 import { useState } from "react";
 
 import { uploadCoverImage } from "@/lib/uploads";
-import { uploadPostImage } from "@/lib/uploads";
 
 interface CoverUploaderProps {
   postId: string;
@@ -25,7 +24,6 @@ const CoverUploader = ({ postId, value, onChange }: CoverUploaderProps) => {
     setError(null);
     try {
       const result = await uploadCoverImage(postId, file);
-      const result = await uploadPostImage(postId, file);
       onChange(result.publicUrl);
     } catch (uploadError) {
       setError(uploadError instanceof Error ? uploadError.message : "Upload failed");
