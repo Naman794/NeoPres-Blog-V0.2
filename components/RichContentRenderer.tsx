@@ -1,6 +1,7 @@
 interface RichContentBlock {
   type: "paragraph" | "heading" | "list";
   text?: string;
+  level?: 1 | 2 | 3 | 4;
   level?: 2 | 3 | 4;
   items?: string[];
 }
@@ -20,6 +21,14 @@ const RichContentRenderer = ({ content }: RichContentRendererProps) => {
     <div className="space-y-4">
       {blocks.map((block, index) => {
         if (block.type === "heading") {
+          const HeadingTag =
+            block.level === 4
+              ? "h4"
+              : block.level === 3
+                ? "h3"
+                : block.level === 2
+                  ? "h2"
+                  : "h1";
           const HeadingTag = block.level === 4 ? "h4" : block.level === 3 ? "h3" : "h2";
           return (
             <HeadingTag key={`${block.type}-${index}`} className="text-xl font-semibold text-slate-900">

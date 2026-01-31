@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 interface RichEditorBlock {
   type: "paragraph" | "heading" | "list";
   text?: string;
+  level?: 1 | 2 | 3 | 4;
   level?: 2 | 3 | 4;
   items?: string[];
 }
@@ -18,6 +19,14 @@ const blocksToHtml = (blocks: RichEditorBlock[]) => {
   return blocks
     .map((block) => {
       if (block.type === "heading") {
+        const tag =
+          block.level === 4
+            ? "h4"
+            : block.level === 3
+              ? "h3"
+              : block.level === 2
+                ? "h2"
+                : "h1";
         const tag = block.level === 4 ? "h4" : block.level === 3 ? "h3" : "h2";
         return `<${tag}>${block.text ?? ""}</${tag}>`;
       }
@@ -40,6 +49,22 @@ const htmlToBlocks = (html: string): RichEditorBlock[] => {
       return;
     }
     const element = node as HTMLElement;
+    if (
+      element.tagName === "H1" ||
+      element.tagName === "H2" ||
+      element.tagName === "H3" ||
+      element.tagName === "H4"
+    ) {
+      blocks.push({
+        type: "heading",
+        level:
+          element.tagName === "H4"
+            ? 4
+            : element.tagName === "H3"
+              ? 3
+              : element.tagName === "H2"
+                ? 2
+                : 1,
     if (element.tagName === "H2" || element.tagName === "H3" || element.tagName === "H4") {
       blocks.push({
         type: "heading",
@@ -81,6 +106,18 @@ const RichEditor = ({ value, onChange }: RichEditorProps) => {
     }
   };
 
+  const handleCreateLink = () => {
+    const url = window.prompt("Link URL");
+    if (!url) {
+      return;
+    }
+    if (url.trim().toLowerCase().startsWith("javascript:")) {
+      window.alert("Invalid link.");
+      return;
+    }
+    applyCommand("createLink", url);
+  };
+
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap gap-2">
@@ -101,6 +138,9 @@ const RichEditor = ({ value, onChange }: RichEditorProps) => {
         <button
           className="rounded-full border border-slate-200 px-3 py-1 text-xs font-medium"
           type="button"
+          onClick={() => applyCommand("formatBlock", "<h1>")}
+        >
+          H1
           onClick={() => applyCommand("formatBlock", "<h2>")}
         >
           H2
@@ -108,6 +148,9 @@ const RichEditor = ({ value, onChange }: RichEditorProps) => {
         <button
           className="rounded-full border border-slate-200 px-3 py-1 text-xs font-medium"
           type="button"
+          onClick={() => applyCommand("formatBlock", "<h2>")}
+        >
+          H2
           onClick={() => applyCommand("formatBlock", "<h3>")}
         >
           H3
@@ -115,6 +158,7 @@ const RichEditor = ({ value, onChange }: RichEditorProps) => {
         <button
           className="rounded-full border border-slate-200 px-3 py-1 text-xs font-medium"
           type="button"
+          onClick={handleCreateLink}
           onClick={() => {
             const url = window.prompt("Link URL");
             if (url) {

@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface PostCardProps {
   slug: string;
   title: string;
@@ -28,6 +30,15 @@ const PostCard = ({ title, category, author, date, excerpt }: PostCardProps) => 
         <span>{date}</span>
       </div>
       <div className="mt-5 flex flex-col gap-5 md:flex-row">
+        <div className="relative flex h-32 w-full items-center justify-center overflow-hidden rounded-2xl bg-slate-100 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 md:h-24 md:w-40">
+          {coverImageUrl ? (
+            <Image
+              alt={title}
+              src={coverImageUrl}
+              fill
+              sizes="(min-width: 768px) 160px, 100vw"
+              className="object-cover"
+            />
         <div className="flex h-32 w-full items-center justify-center overflow-hidden rounded-2xl bg-slate-100 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 md:h-24 md:w-40">
           {coverImageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element

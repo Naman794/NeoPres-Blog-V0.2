@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import Image from "next/image";
+
 import AdSlot from "@/components/AdSlot";
 import AuthorCard from "@/components/AuthorCard";
 import RichContentRenderer from "@/components/RichContentRenderer";
@@ -41,6 +43,19 @@ export const generateMetadata = async ({
     return { title: "Article not found | NeoPress" };
   }
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://example.com";
+  const canonical = `${siteUrl}/articles/${post.slug}`;
+
+  return {
+    title: `${post.title} | NeoPress`,
+    description: post.excerpt ?? undefined,
+    alternates: {
+      canonical,
+    },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt ?? undefined,
+      url: canonical,
   return {
     title: `${post.title} | NeoPress`,
     description: post.excerpt ?? undefined,
@@ -73,6 +88,15 @@ const ArticleDetailPage = async ({ params }: { params: { slug: string } }) => {
 
   return (
     <div className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6">
+      <div className="relative h-[240px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
+        {post.cover_image_url ? (
+          <Image
+            alt={post.title}
+            src={post.cover_image_url}
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
       <div className="overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
         {post.cover_image_url ? (
           // eslint-disable-next-line @next/next/no-img-element

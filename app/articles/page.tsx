@@ -12,6 +12,12 @@ const formatDate = (value: string | null) => {
   });
 };
 
+const PAGE_SIZE = 12;
+
+const ArticlesPage = async ({ searchParams }: { searchParams: { page?: string } }) => {
+  const pageNumber = Math.max(Number(searchParams.page ?? "1"), 1);
+  const from = (pageNumber - 1) * PAGE_SIZE;
+  const to = from + PAGE_SIZE - 1;
 const ArticlesPage = async () => {
   const { data: posts } = await supabasePublic
     .from("posts")
@@ -21,6 +27,7 @@ const ArticlesPage = async () => {
     .eq("status", "published")
     .eq("is_hidden", false)
     .order("published_at", { ascending: false })
+    .range(from, to);
     .limit(12);
 
 const ArticlesPage = () => {
@@ -74,6 +81,21 @@ const ArticlesPage = () => {
             coverImageUrl={post.cover_image_url}
           />
         )) ?? null}
+      </div>
+      <div className="mt-10 flex items-center justify-between text-sm text-slate-600">
+        <a
+          className={`rounded-full border border-slate-200 px-4 py-2 ${pageNumber === 1 ? \"pointer-events-none opacity-50\" : \"\"}`}
+          href={`/articles?page=${pageNumber - 1}`}
+        >
+          Previous
+        </a>
+        <span>Page {pageNumber}</span>
+        <a
+          className={`rounded-full border border-slate-200 px-4 py-2 ${posts && posts.length < PAGE_SIZE ? \"pointer-events-none opacity-50\" : \"\"}`}
+          href={`/articles?page=${pageNumber + 1}`}
+        >
+          Next
+        </a>
         {posts.map((post) => (
           <PostCard key={post.title} {...post} />
         ))}
