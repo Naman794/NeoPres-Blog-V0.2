@@ -18,6 +18,7 @@ const ArticlesPage = async ({ searchParams }: { searchParams: { page?: string } 
   const pageNumber = Math.max(Number(searchParams.page ?? "1"), 1);
   const from = (pageNumber - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
+const ArticlesPage = async () => {
   const { data: posts } = await supabasePublic
     .from("posts")
     .select(
@@ -27,6 +28,32 @@ const ArticlesPage = async ({ searchParams }: { searchParams: { page?: string } 
     .eq("is_hidden", false)
     .order("published_at", { ascending: false })
     .range(from, to);
+    .limit(12);
+
+const ArticlesPage = () => {
+  const posts = [
+    {
+      title: "The quest log for modern shonen pacing",
+      category: "Feature",
+      author: "Aya Sato",
+      date: "Sept 10, 2024",
+      excerpt: "Why smaller arcs keep momentum high without losing emotional depth.",
+    },
+    {
+      title: "Inside the coziest indie worlds of 2024",
+      category: "Roundup",
+      author: "Liam Park",
+      date: "Sept 08, 2024",
+      excerpt: "From pixel farms to pastel skies, cozy is here to stay.",
+    },
+    {
+      title: "Composer spotlight: scoring for boss battles",
+      category: "Interview",
+      author: "Mina Ito",
+      date: "Sept 04, 2024",
+      excerpt: "Turning combat into symphony and leaning into emotional motifs.",
+    },
+  ];
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
@@ -69,6 +96,9 @@ const ArticlesPage = async ({ searchParams }: { searchParams: { page?: string } 
         >
           Next
         </a>
+        {posts.map((post) => (
+          <PostCard key={post.title} {...post} />
+        ))}
       </div>
     </div>
   );
