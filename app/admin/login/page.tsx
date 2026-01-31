@@ -28,19 +28,6 @@ const LoginPage = () => {
       return;
     }
 
-    const { data: profile } = await supabaseClient
-      .from("profiles")
-      .select("role")
-      .eq("id", data.user?.id ?? "")
-      .maybeSingle();
-
-    if (!profile || (profile.role !== "admin" && profile.role !== "editor")) {
-      await supabaseClient.auth.signOut();
-      setError("Access denied. Ask an admin to assign your role.");
-      setLoading(false);
-      return;
-    }
-
     if (data.session) {
       document.cookie = `sb-access-token=${data.session.access_token}; Path=/; SameSite=Lax`;
       document.cookie = `sb-refresh-token=${data.session.refresh_token}; Path=/; SameSite=Lax`;
